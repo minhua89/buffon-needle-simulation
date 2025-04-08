@@ -32,10 +32,19 @@ line_distance = st.sidebar.slider("線距 (d)", 0.2, 3.0, 2.0, 0.1)
 tab1, tab2 = st.tabs(["🔴 紅針模擬圖", "📈 π估算折線圖"])
 
 # -------------------------------
-# 🔴 Tab1：紅針與平行線模擬圖
+# 🔴 Tab1：紅針與平行線模擬圖 + 公式帶入
 # -------------------------------
 with tab1:
     st.subheader("🔴 模擬紅針與黑色平行線的視覺圖")
+
+    st.markdown(r"""
+    ### 📐 估算公式：
+    $$ \pi \approx \frac{2 \cdot l \cdot N}{d \cdot H} $$  
+    - \( l \)：針長  
+    - \( d \)：線距  
+    - \( N \)：丟針次數  
+    - \( H \)：交線次數  
+    """)
 
     center_y = np.random.uniform(0, line_distance, trials_tab1)
     center_x = np.random.uniform(0, 10, trials_tab1)
@@ -48,6 +57,17 @@ with tab1:
 
     hits = np.sum((y0 // line_distance) != (y1 // line_distance))
     pi_estimate = (2 * needle_length * trials_tab1) / (line_distance * hits) if hits > 0 else 0
+
+    st.markdown(f"""
+    ### ✅ 模擬參數帶入：
+    - 針長 \( l \) = **{needle_length}**  
+    - 線距 \( d \) = **{line_distance}**  
+    - 試驗次數 \( N \) = **{trials_tab1}**  
+    - 交線次數 \( H \) = **{hits}**
+
+    > 推算得：  
+    $$ \pi \approx \\frac{{2 \\cdot {needle_length} \\cdot {trials_tab1}}}{{{line_distance} \\cdot {hits}}} = {pi_estimate:.5f} $$
+    """)
 
     fig1 = go.Figure()
     fig1.add_shape(type="line", x0=0, x1=12, y0=0, y1=0, line=dict(color="black", width=2))
@@ -70,6 +90,12 @@ with tab1:
 # -------------------------------
 with tab2:
     st.subheader("📈 每 1000 次模擬估算一次 π")
+
+    st.markdown(r"""
+    ### 📐 估算公式：
+    $$ \pi \approx \frac{2 \cdot l \cdot N}{d \cdot H} $$  
+    - 每 1000 次累積更新一次估算值  
+    """)
 
     y_dist = np.random.uniform(0, line_distance / 2, trials_tab2)
     angs = np.random.uniform(0, math.pi / 2, trials_tab2)
